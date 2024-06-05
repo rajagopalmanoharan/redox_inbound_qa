@@ -1,5 +1,4 @@
-#
-# Python/Dagster Script/Job/Schedule to
+#Python/Dagster Script/Job/Schedule to
 # download, database and run data quality checks
 # against Admit, Discharge and Transfer (ADT) data
 # being received from Health Information Exchanges (HIEs)
@@ -28,7 +27,7 @@ class Parms:
         # Initialization
         #
         code_environment = "DEV"  # LOCAL, DEV,TEST or PROD
-        data_environment = "PROD"  # STAGING or PROD
+        data_environment = "STAGING"  # STAGING or PROD
         self.debug_mode = False
 
         # Set credentials based upon environment
@@ -50,11 +49,19 @@ class Parms:
             exit()
 
         # Set data locations based upon environment
-        if data_environment == "STAGING":
+        if data_environment == "DEV":
             self.source_bucket_and_folder = \
                 "staging-cityblock-data-raw-inputs/redox/raw/dev"
             self.bundles_folder = "tempBundlesStaging"
-            self.target_table = "cbh-data-platform-staging.cbh-validation.redox_inbound_bundles"
+            self.target_table = "cbh-data-platform-dev.cbh_validation.redox_inbound_bundles"
+            self.test_config_file = \
+                str(Path(__file__)
+                    .with_name("redox_staging_inbound_qa_config_tests.txt"))
+        elif data_environment == "STAGING":
+            self.source_bucket_and_folder = \
+                "staging-cityblock-data-raw-inputs/redox/raw/dev"
+            self.bundles_folder = "tempBundlesStaging"
+            self.target_table = "cbh-data-platform-staging.cbh_validation.redox_inbound_bundles"
             self.test_config_file = \
                 str(Path(__file__)
                     .with_name("redox_staging_inbound_qa_config_tests.txt"))
@@ -62,7 +69,7 @@ class Parms:
             self.source_bucket_and_folder = \
                 "cityblock-data-raw-inputs/redox/raw/prod"
             self.bundles_folder = "tempBundles"
-            self.target_table = "cbh-data-platform-production.cbh-validation.redox_inbound_bundles"
+            self.target_table = "cbh-data-platform-production.cbh_validation.redox_inbound_bundles"
             self.test_config_file = \
                 str(Path(__file__)
                     .with_name("redox_inbound_qa_config_tests.txt"))
